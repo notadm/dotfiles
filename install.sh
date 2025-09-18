@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DOTFILES=~/dotfiles   # path to your dotfiles repo
 DATE=$(date +%s)
 
@@ -8,14 +10,14 @@ echo "Setting up dotfiles..."
 echo "==============================="
 
 # ------------------------
-# Check/install Neovim
+# Check/install Neovim >=0.8
 # ------------------------
 NEOVIM_OK=0
 if command -v nvim &> /dev/null; then
-    NV_VER=$(nvim --version | head -n1 | awk '{print $2}')
+    NV_VER=$(nvim --version | head -n1 | awk '{print $2}' | tr -d v)
     NV_MAJOR=$(echo $NV_VER | cut -d. -f1)
     NV_MINOR=$(echo $NV_VER | cut -d. -f2)
-    if [ "$NV_MAJOR" -ge 1 ] || [ "$NV_MAJOR" -eq 0 ] && [ "$NV_MINOR" -ge 8 ]; then
+    if [ "$NV_MAJOR" -gt 0 ] || ([ "$NV_MAJOR" -eq 0 ] && [ "$NV_MINOR" -ge 8 ]); then
         NEOVIM_OK=1
     fi
 fi
@@ -23,10 +25,10 @@ fi
 if [ "$NEOVIM_OK" -eq 0 ]; then
     echo "Neovim not found or too old. Installing latest locally..."
     mkdir -p ~/bin
+    cd ~/bin
     curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
     chmod u+x nvim.appimage
-    mv nvim.appimage ~/bin/nvim
-    ln -sf ~/bin/nvim ~/bin/nvim
+    mv nvim.appimage nvim
     export PATH="$HOME/bin:$PATH"
 fi
 
@@ -48,7 +50,8 @@ if ! command -v tmux &> /dev/null; then
         brew install tmux
     elif [[ -f /etc/debian_version ]]; then
         if sudo -n true 2>/dev/null; then
-            sudo apt install -y tmux
+            sudo apt update
+            sudo apt install -y tmux git curl
         else
             echo "No sudo: cannot install tmux system-wide. Please install manually."
         fi
