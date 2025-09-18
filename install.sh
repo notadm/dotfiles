@@ -7,17 +7,29 @@ echo "==============================="
 echo "Setting up dotfiles..."
 echo "==============================="
 
-
 # ------------------------
 # Check/install Neovim
 # ------------------------
 if ! command -v nvim &> /dev/null; then
     echo "Neovim not found. Installing..."
+
     if [[ "$OSTYPE" == "darwin"* ]]; then
         brew install neovim
+
     elif [[ -f /etc/debian_version ]]; then
-        sudo apt update
-        sudo apt install -y neovim curl
+        if sudo -n true 2>/dev/null; then
+            # sudo is available
+            sudo apt update
+            sudo apt install -y neovim curl
+        else
+            echo "No sudo. Installing Neovim locally..."
+            mkdir -p ~/bin
+            curl -Lo ~/bin/nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+            chmod u+x ~/bin/nvim.appimage
+            ln -sf ~/bin/nvim.appimage ~/bin/nvim
+            export PATH="$HOME/bin:$PATH"
+        fi
+
     else
         echo "Please install Neovim manually."
         exit 1
@@ -33,7 +45,11 @@ if ! command -v tmux &> /dev/null; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
         brew install tmux
     elif [[ -f /etc/debian_version ]]; then
-        sudo apt install -y tmux
+        if sudo -n true 2>/dev/null; then
+            sudo apt install -y tmux
+        else
+            echo "No sudo: cannot install tmux system-wide. Please install manually."
+        fi
     else
         echo "Please install tmux manually."
         exit 1
@@ -98,4 +114,3 @@ echo "Neovim plugins installed."
 echo "==============================="
 echo "Dotfiles setup complete!"
 echo "==============================="
-
