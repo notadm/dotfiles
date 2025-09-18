@@ -1,36 +1,27 @@
 #!/bin/bash
 
-DOTFILES=~/dotfiles
+DOTFILES=~/dotfiles   # path to your dotfiles repo
 DATE=$(date +%s)
 
 echo "==============================="
 echo "Setting up dotfiles..."
 echo "==============================="
 
+
 # ------------------------
 # Check/install Neovim
 # ------------------------
 if ! command -v nvim &> /dev/null; then
     echo "Neovim not found. Installing..."
-
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        if ! command -v brew &> /dev/null; then
-            echo "Homebrew not found. Installing Homebrew first..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        fi
         brew install neovim
-
     elif [[ -f /etc/debian_version ]]; then
-        # Debian/Ubuntu Linux
         sudo apt update
-        sudo apt install -y neovim git curl
-
+        sudo apt install -y neovim curl
     else
-        echo "Please install Neovim manually for your OS."
+        echo "Please install Neovim manually."
         exit 1
     fi
-
     echo "Neovim installed."
 fi
 
@@ -39,32 +30,27 @@ fi
 # ------------------------
 if ! command -v tmux &> /dev/null; then
     echo "tmux not found. Installing..."
-
     if [[ "$OSTYPE" == "darwin"* ]]; then
         brew install tmux
     elif [[ -f /etc/debian_version ]]; then
         sudo apt install -y tmux
     else
-        echo "Please install tmux manually for your OS."
+        echo "Please install tmux manually."
         exit 1
     fi
-
     echo "tmux installed."
 fi
 
 # ------------------------
 # TMUX CONFIG
 # ------------------------
-# Backup existing tmux config
 if [ -f ~/.tmux.conf ]; then
     mv ~/.tmux.conf ~/.tmux.conf.backup.$DATE
     echo "Existing ~/.tmux.conf backed up."
 fi
-
 ln -sf $DOTFILES/tmux.conf ~/.tmux.conf
 echo "tmux.conf symlinked."
 
-# Optional: symlink tmux folder if exists
 if [ -d $DOTFILES/tmux ]; then
     if [ -d ~/.tmux ]; then
         mv ~/.tmux ~/.tmux.backup.$DATE
@@ -74,20 +60,17 @@ if [ -d $DOTFILES/tmux ]; then
     echo "tmux folder symlinked."
 fi
 
-# Install TPM if missing
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     echo "TPM installed."
 fi
 
-# Install tmux plugins
 tmux start-server \; run '~/.tmux/plugins/tpm/bin/install_plugins'
 echo "tmux plugins installed."
 
 # ------------------------
 # NEOVIM CONFIG
 # ------------------------
-# Backup existing Neovim config
 if [ -d ~/.config/nvim ]; then
     mv ~/.config/nvim ~/.config/nvim.backup.$DATE
     echo "Existing Neovim config backed up."
@@ -107,11 +90,12 @@ if [ ! -d "$LAZY_PATH" ]; then
 fi
 
 # ------------------------
-# Install Neovim plugins
+# Install Neovim plugins (headless)
 # ------------------------
-nvim --headless -c 'require("lazy").install() | qa'
+nvim --headless -c 'lua require("lazy").sync()' -c 'qa'
 echo "Neovim plugins installed."
 
 echo "==============================="
 echo "Dotfiles setup complete!"
 echo "==============================="
+

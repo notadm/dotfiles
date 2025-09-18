@@ -39,7 +39,7 @@ require("lazy").setup({
 require('Comment').setup({padding=true, toggler={line='c'}, opleader={line='<C-c>'} }) -- https://github.com/numToStr/Comment.nvim?tab=readme-ov-file
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "c", "cpp", "lua", "vim", "python", "javascript", "typescript", "latex", "markdown" },
+  ensure_installed = { "c", "cpp", "lua", "vim", "python", "javascript", "typescript", "markdown" },
   sync_install = false,
   auto_install = true,
   highlight = {
