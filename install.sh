@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 DOTFILES=~/dotfiles   # path to your dotfiles repo
@@ -104,6 +103,56 @@ fi
 # ------------------------
 nvim --headless -c 'lua require("lazy").sync()' -c 'qa'
 
+# ------------------------
+# Zsh setup with Dave Verwer theme
+# ------------------------
+ZSHRC=~/.zshrc
+
+# Backup existing .zshrc
+if [ -f "$ZSHRC" ]; then
+    mv "$ZSHRC" "$ZSHRC.backup.$DATE"
+fi
+
+# Install Oh My Zsh if missing
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+ZSH_CUSTOM=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
+
+# Plugins
+[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ] && \
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+
+[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ] && \
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+
+# Write .zshrc
+cat > "$ZSHRC" << 'EOF'
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+alias ll='ls -la'
+alias gs='git status'
+alias gco='git checkout'
+alias gl='git log --oneline --graph --decorate'
+alias nv='nvim'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="daveverwer"
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+source $ZSH/oh-my-zsh.sh
+
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+alias ls='ls -GFh'
+EOF
+
+echo "Zsh setup complete with Dave Verwer theme!"
 echo "==============================="
 echo "Dotfiles setup complete!"
 echo "==============================="
+echo "Please restart your terminal or run 'source ~/.zshrc' to activate Zsh."
