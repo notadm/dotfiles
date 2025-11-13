@@ -17,7 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
         "luisiacc/gruvbox-baby",
-        "benlubas/molten-nvim", -- pynb
+        -- "benlubas/molten-nvim", -- pynb
         "numToStr/Comment.nvim", -- comment
         "nvim-treesitter/nvim-treesitter", -- tree-sitter
         "pocco81/high-str.nvim", -- color highlighter 
@@ -140,8 +140,10 @@ vim.api.nvim_set_hl(0, "Comment", { bg="#333333", fg="#FFFFFF"})
 vim.cmd [[hi MatchParen guibg=#f3faa7 guifg=Black gui=bold]]
 
 vim.opt.termguicolors = true
-vim.cmd [[highlight Normal guibg=NONE]]
-vim.cmd [[highlight NormalNC guibg=NONE]]
+-- vim.cmd [[highlight Normal guibg=NONE guifg=#D4BE98]]
+-- vim.cmd [[highlight NormalNC guibg=NONE guifg=#D4BE98]]
+vim.api.nvim_set_hl(0, "Normal", { fg="#D4BE98", bg="NONE" })
+vim.api.nvim_set_hl(0, "NormalNC", { fg="#D4BE98", bg="NONE" })
 
 
 -- KEYMAPS
@@ -150,22 +152,22 @@ vim.g.mapleader = " "
 local k = vim.keymap
 -- vim.opt.timeoutlen = 1000
 
--- Inline 
-k.set("n", "+", "<C-a>", {desc = "Increament"})
-k.set("n", "-", "<C-x>", {desc = "Decreament"})
-k.set("n", "<leader>c", "gcc", {desc = "Comment"})
-
--- Windows
-k.set("n", "<leader>v", "<C-w>v", {desc = "Split Window Vertically"})
-k.set("n", "<leader>h", "<C-w>s", {desc = "Split Window Horizontally"})
-k.set("n", "<leader>x", "<cmd>close<CR>", {desc = "Close Window"})
-k.set("n", "<leader>w", "<C-w>w", {desc = "Next Window"})
-
--- Tabs
-k.set("n", "<leader>t", "<cmd>tabnew %<CR>", {desc = "New Tab"})
-k.set("n", "<leader>w", "<cmd>tabclose<CR>", {desc = "Close Tab"})
-k.set("n", "<leader>n", "<cmd>tabn<CR>", {desc = "Next Tab"})
-k.set("n", "<leader>p", "<cmd>tabp<CR>", {desc = "Prev Tab"})
+-- -- Inline 
+-- k.set("n", "+", "<C-a>", {desc = "Increament"})
+-- k.set("n", "-", "<C-x>", {desc = "Decreament"})
+-- k.set("n", "<leader>c", "gcc", {desc = "Comment"})
+--
+-- -- Windows
+-- k.set("n", "<leader>v", "<C-w>v", {desc = "Split Window Vertically"})
+-- k.set("n", "<leader>h", "<C-w>s", {desc = "Split Window Horizontally"})
+-- k.set("n", "<leader>x", "<cmd>close<CR>", {desc = "Close Window"})
+-- k.set("n", "<leader>w", "<C-w>w", {desc = "Next Window"})
+--
+-- -- Tabs
+-- k.set("n", "<leader>t", "<cmd>tabnew %<CR>", {desc = "New Tab"})
+-- k.set("n", "<leader>w", "<cmd>tabclose<CR>", {desc = "Close Tab"})
+-- k.set("n", "<leader>n", "<cmd>tabn<CR>", {desc = "Next Tab"})
+-- k.set("n", "<leader>p", "<cmd>tabp<CR>", {desc = "Prev Tab"})
 
 -- highlight text
 k.set("v", "1", ":<c-u>HSHighlight 1<CR>")
@@ -175,38 +177,26 @@ k.set("v", "4", ":<c-u>HSHighlight 3<CR>")
 k.set("v", "5", ":<c-u>HSHighlight 4<CR>")
 k.set("v", "x", ":<c-u>HSRmHighlight<CR>")
 
-vim.keymap.set("v", "[", "c[<C-r>\"]<Esc>")
-vim.keymap.set("v", "(", "c(<C-r>\")<Esc>")
-vim.keymap.set("v", '"', 'c"<C-r>\""<Esc>')
-vim.keymap.set("v", "{", "c{<C-r>\"}<Esc>")
-
-
-vim.api.nvim_set_keymap('v', 'f', 'zf', { noremap = true, silent = true }) -- Create fold
-vim.api.nvim_set_keymap('n', 'f', 'za', { noremap = true, silent = true }) -- Toggle fold
-
-
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true }) -- terminal esc
 
 
 vim.opt.clipboard = "unnamedplus"
 
-vim.o.termguicolors = true
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   callback = function()
     -- active window: bright background
-    vim.api.nvim_set_hl(0, "Normal",   { fg = "#d0d0d0", bg = "#000000" })
-
+    vim.api.nvim_set_hl(0, "Normal",   { fg = "#D4BE98", bg = "#000000" })
+    -- vim.api.nvim_set_hl(0, "Normal",   { fg = "#D4BE98", bg = "#000000" })
     -- inactive windows: dim background
     vim.api.nvim_set_hl(0, "NormalNC", { fg = "#808080", bg = "#000000" })
   end,
 })
 vim.cmd("doautocmd ColorScheme")
 
-vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
+-- vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
+-- vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true })
+-- vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
+-- vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
 
 
 -- vim.cmd([[
@@ -226,16 +216,51 @@ vim.cmd([[
 
 -- transparent bg
 vim.cmd [[
-  hi Normal guibg=NONE ctermbg=NONE
-  hi NormalNC guibg=NONE ctermbg=NONE
-  hi EndOfBuffer guibg=NONE ctermbg=NONE
-  hi LineNr guibg=NONE ctermbg=NONE
-  hi SignColumn guibg=NONE ctermbg=NONE
+  hi Normal guibg=NONE ctermbg=NONE guifg=#D4BE98
+  hi NormalNC guibg=NONE ctermbg=NONE guifg=#D4BE98
+  hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#D4BE98
+  hi LineNr guibg=NONE ctermbg=NONE guifg=#D4BE98
+  hi SignColumn guibg=NONE ctermbg=NONE guifg=#D4BE98
 ]]
 
 -- Terminal mode window navigation
-vim.api.nvim_set_keymap('t', '<C-h>', [[<C-\><C-n><C-w>h]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-j>', [[<C-\><C-n><C-w>j]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-k>', [[<C-\><C-n><C-w>k]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-l>', [[<C-\><C-n><C-w>l]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('t', '<C-h>', [[<C-\><C-n><C-w>h]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('t', '<C-j>', [[<C-\><C-n><C-w>j]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('t', '<C-k>', [[<C-\><C-n><C-w>k]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('t', '<C-l>', [[<C-\><C-n><C-w>l]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('t', '<C-e>', '<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-h>', '<Left>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-j>', '<Down>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-k>', '<Up>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-l>', '<Right>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-d>', '<BS>', { noremap = true, silent = true })
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true }) -- terminal esc
+
+-- vim.api.nvim_set_keymap('i', '<C-e>', '<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('i', '<C-d>', '<BS>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("i", "<C-b>", "()<ESC>i", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("i", "<C-n>", "[]<ESC>i", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("i", "<C-m>", "{}<ESC>i", { noremap = true, silent = true })
+
+
+vim.keymap.set("i", "<C-h>", "()<ESC>i")
+vim.keymap.set("i", "<C-j>", "[]<ESC>i")
+vim.keymap.set("i", "<C-k>", "{}<ESC>i")
+vim.keymap.set("i", "<C-l>", "<Right>")
+
+
+vim.keymap.set("v", "<C-h>", "c(<C-r>\")<Esc>")
+vim.keymap.set("v", "<C-j>", "c[<C-r>\"]<Esc>")
+vim.keymap.set("v", "<C-k>", "c{<C-r>\"}<Esc>")
+-- vim.keymap.set("v", '"', 'c"<C-r>\""<Esc>')
+
+
+vim.api.nvim_set_keymap('v', 'f', 'zf', { noremap = true, silent = true }) -- Create fold
+vim.api.nvim_set_keymap('n', 'f', 'za', { noremap = true, silent = true }) -- Toggle fold
+
+
+
+vim.opt.tabstop = 8
+vim.opt.shiftwidth = 8
+vim.opt.expandtab = false
 
